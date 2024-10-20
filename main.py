@@ -2,7 +2,12 @@ import streamlit as st
 from helper_functions.utility import check_password  
 from helper_functions import llm 
 
-st.title("Streamlit App")
+st.set_page_config(
+    layout="centered",
+    page_title="CPO Specfication Drafter"
+)
+
+st.title("Specification Drafter")
 
 # Check if the password is correct.  
 if not check_password():  

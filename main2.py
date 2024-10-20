@@ -6,6 +6,11 @@ from helper_functions import llm
 from crewai import Agent, Task, Crew
 from crewai_tools import WebsiteSearchTool
 
+st.set_page_config(
+    layout="centered",
+    page_title="Specfications Drafter"
+)
+
 st.title("Specifications Drafter")
 
 # Check if the password is correct.  
@@ -23,13 +28,11 @@ tool_websearch = WebsiteSearchTool("https://www.gebiz.gov.sg/ptn/opportunity/BOL
 
 
 # Creating Agents
-agent_planner = Agent(
-    role="Specifications Planner",
-    goal="Plan engaging and factually accurate content on {topic}",
-    backstory="""You're working on drafting the specifications to purchase the item: {topic}.
-    You collect information that helps the users to draft the specifications on the item to expedite the procurement process.""",
+agent_assembler = Agent(
+    role="Information Assembler",
+    goal="Collate factually accurate content on {topic}",
+    backstory="""You are responsible to source for information relevant to the {topic}. You should collect the information in the document name "specifications", "SOR" or "SOW" from the website on {topic}.""",
  
-
     allow_delegation=False, # <-- This is now set to False
 	verbose=True,
 )
@@ -37,75 +40,72 @@ agent_planner = Agent(
 agent_analyst = Agent(
     role="Analyst",
     goal="Conduct in-depth research on the item: {topic}",
-    backstory="""You're working on conducting in-depth research on the item: {topic}.""",
+    backstory="""You provide in-depth analyse of the information compiled by the Information Assembler.""",
+
      allow_delegation=False,
     verbose=True,
 )
 
 agent_writer = writer = Agent(
     role="Specifications Writer",
-    goal="Write insightful and factually accurate specifications about the item: {topic}",
-
-    backstory="""You're working on a writing the specification about the item: {topic}.
-    You base your writing on the outline from Specifications Planner and the research report from the Analyst.""", # <-- New line added
+    goal="Write a factually accurate specifications to purchase the item: {topic}",
+    backstory="""You're working on a writing the specification about the item: {topic}. You base your writing on the report prepared by the Analyst.""",
+    
     allow_delegation=False,
     verbose=True,
 )
 
 
 # <---------------------------------- Creating Tasks ---------------------------------->
-task_plan = Task(
+task_assemble = Task(
     description="""\
-    1. Prioritize the latest trends, key players, and noteworthy news on {topic}.
-    2. Identify the target audience, considering "their requirements and limitations.
-    3. Develop a detailed specfication outline, including introduction and key points.""",
+    1. Source for information relevant to the {topic}.
+    2. Identify the technical information and key performance indicator.
+    3. Develop a detailed specfication outline, including background and key points.""",
 
     expected_output="""\
-    A comprehensive specifications document with a scope, evaluation criteria, delivery schedule, payment milestones and contact person.""",
-    agent=agent_planner,
-
-    async_execution=True # Will be executed asynchronously [NEW]
-)
-
-task_research = Task(
-    description="""\
-    1. Conduct in-depth research on the item: {topic}.
-    2. Provide the Content Planner with the latest trends, key players, and noteworthy news on the item.
-    3. Pprovide additional insights and resources to enhance the specifications document
-    4. Include latest developmnents in the research report.""",
-
-
-    expected_output="""\
-    A detailed research report with the latest trends, key players, and noteworthy news on the item.""",
-
-    agent=agent_analyst,
+    A comprehensive specifications outline with a Contract Duration, Contracting Authority, Background Information, Scope of Work (Includes Performance Indicators), delivery schedule (in table form), payment milestones (in table form) and contact person.""",
+    agent=agent_assembler,
     tools=[tool_websearch],
 
     async_execution=True # Will be executed asynchronously [NEW]
 )
 
+task_analyse = Task(
+    description="""\
+    1. Conduct in-depth analysis on the {topic}.
+    2. Provide the Specifications Writer with a succinct report based on the information gathered by the Information Assembler.
+    3. Provide additional insights and resources to enhance the report.""",
+   
+    expected_output="""\
+    A detailed report with a Contract Duration, Contracting Authority, Background Information, Scope of Work (Includes Performance Indicators), delivery schedule (in table form), payment milestones (in table form) and contact person.""",
+
+    agent=agent_analyst,
+    
+    async_execution=True # Will be executed asynchronously [NEW]
+)
+
 task_write = Task(
     description="""\
-    1. Use the specifications document to craft a comprehensive specifcations to purchase {topic} based on the target audience's requirements.
-    2. Sections/Subtitles are properly named in an engaging manner.
-    3. Ensure the post is structured with an engaging introduction, insightful body, and a summarizing conclusion.
-    4. Proofread for grammatical errors and alignment the common style used in tech blogs.
+    1. Use the detailed report to craft a comprehensive specifcations to purchase {topic}.
+    2. Sections are properly named and annotated in bold.
+    3. Ensure the doucment is written in a clear and direct manner.
+    4. Proofread for grammatical errors and alignment the common style used in business report.
     5. You MUST check with human users to get their feedback on the content, and incorporate the suggestion to revise the content.""",
 
     expected_output="""
-    A well-written specifications "in markdown format, ready for publication, each section should have 2 or 3 paragraphs.""",
+    A well-written specifications "in markdown.markdown format, ready for publication, each section should have 1 or 2 paragraphs.""",
     agent=agent_writer,
     # human_input=True, # Remove user input for this task [NEW]
 
-    context=[task_plan, task_research], # Will wait for the output of the two tasks to be completed,
-  
+    context=[task_assemble, task_analyse], # Will wait for the output of the two tasks to be completed,
 )
 
 
 # <---------------------------------- Creating the Crew ---------------------------------->
 crew = Crew(
-    agents=[agent_planner, agent_analyst, agent_writer],
-    tasks=[task_plan, task_research, task_write],
+    agents=[agent_assembler, agent_analyst, agent_writer],
+    tasks=[task_assemble, task_analyse, task_write],
     verbose=True
 )
 
