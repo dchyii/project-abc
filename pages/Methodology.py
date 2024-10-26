@@ -1,4 +1,5 @@
 import streamlit as st
+import cv2
 
 # region <--------- Streamlit App Configuration --------->
 st.set_page_config(
@@ -17,5 +18,9 @@ with st.expander("Data Flows"):
 with st.expander("Implementation Details"):
     st.write("1. Enter your prompt in the text area.")   
 
-with st.expander("Flow Chart"):
-    st.write("1. A flowchart illustrating the process flow for each of the use cases in the application. For example, if the application has two main use cases: a) chat with information and b) intelligent search, each of these use cases should have its own flowchart")
+
+with st.expander("Flowchart"):
+    im = cv2.imread('DAT.jpg')
+    cv2.imshow('DAT', im)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
