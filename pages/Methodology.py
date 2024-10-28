@@ -20,7 +20,4 @@ with st.expander("Implementation Details"):
 
 
 with st.expander("Flowchart"):
-    im = cv2.imread('DAT.jpg')
-    cv2.imshow('DAT', im)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    st.image("DAT.jpg")
