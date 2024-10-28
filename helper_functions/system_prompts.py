@@ -21,7 +21,6 @@ Please draft the requirements specifications solely for this section as detailed
 "for_confirmation" : """
 Let's walk through this step by step. Firstly, check if the user is agreeable with the draft.
 If the sentiment is positive, you are to return the current draft in the proper text paragraphs form with section header and not in json format in the key "results". Proofread for grammatical errors. Respond in a positive tone and inform the user that we shall move onto to draft the next section of the requirements specifications. The value to the key "next_step" shall be "confirmed". 
-If the sentiment is negative, you are to amend the draft based on the latest user's prompt, and return the updated draft in the key "results" in the json. Based on the original draft and updated draft, inform the user in proper sentence form what you have amended and ask for confirmation in the key "reply". The value to the key "next_step" shall be the word "for_confirmation". 
-
+If the user suggests amendments to the draft_section, you are to amend the draft_section not the initial_draft of the user's requirement based on the latest user's prompt, and return the updated draft_section in the key "results" in the json. Based on the original draft_section and the updated draft_section, inform the user in proper sentence form what you have amended and ask for confirmation in the key "reply". The value to the key "next_step" shall be the word "for_confirmation". 
 """
 }
