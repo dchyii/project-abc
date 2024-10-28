@@ -1,5 +1,4 @@
 import streamlit as st
-import cv2
 
 # region <--------- Streamlit App Configuration --------->
 st.set_page_config(
