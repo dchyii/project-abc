@@ -25,6 +25,6 @@ with st.expander("Implementation Details"):
 
 
 with st.expander("Flowchart"):
-    st.markdown('<blockquote class="imgur-embed-pub" lang="en" data-id="a/J60ch3l"><a href="//imgur.com/J60ch3l"></a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>',
+    st.markdown('<img src="https://i.imgur.com/UtkjZXv.png">',
     unsafe_allow_html=True,)
     # st.image("main/DetailedProcessWorkflow.png")
