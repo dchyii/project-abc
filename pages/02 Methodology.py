@@ -25,6 +25,6 @@ with st.expander("Implementation Details"):
 
 
 with st.expander("Flowchart"):
-    st.markdown('<img src="./static/DetailedProcessWorkflow.PNG">',
+    st.markdown('<img src="https://imgur.com/a/J60ch3l">',
     unsafe_allow_html=True,)
     # st.image("main/DetailedProcessWorkflow.png")
